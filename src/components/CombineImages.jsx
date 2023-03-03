@@ -3,7 +3,6 @@ import 'react-toastify/dist/ReactToastify.css'
 import { API_URL } from '../consts'
 import { UploadedImages } from './UploadedImages'
 import { Dropzone } from './Dropzone'
-import { useImages } from '../hooks/useImages'
 
 export const CombineImages = () => {
   // const uploadImages = async () => {
@@ -27,23 +26,7 @@ export const CombineImages = () => {
 
   return (
     <>
-      <section>
-        <Dropzone />
-        <UploadedImages />
-        {/* {images.length === 2 ? (
-          <div className="w-full flex gap-5 justify-center mt-4">
-            <p className="text-2xl">Select an image as background </p>
-            <button
-              className="bg-blue-600 text-white p-1 rounded-md"
-              onClick={() => {
-                uploadImages()
-              }}
-            >
-              Upload
-            </button>
-          </div>
-        ) : null} */}
-      </section>
+      <Dropzone />
       <section className="mt-10">
         <p className="text-3xl">Custom not selected image</p>
         <div className="grid grid-cols-2 gap-6 mt-5">

@@ -19,8 +19,31 @@ const dropZoneStyle = {
   transition: 'border .24s ease-in-out',
 }
 
+const previewContainer = {
+  with: '100%',
+  display: 'flex',
+  justifyContent: 'center',
+  flexWrap: 'wrap',
+  gap: 15,
+  marginTop: 20,
+}
+
+const previewInner = {
+  display: 'flex',
+  flexDirection: 'column',
+  minWidth: 0,
+  gap: 10,
+}
+
+const img = {
+  display: 'block',
+  width: 'auto',
+  maxWidth: '250px',
+  // maxHeigth: '100px',
+}
+
 export const Dropzone = () => {
-  const { images, setNewImages } = useImages()
+  const { images, setNewImages, removeImage } = useImages()
   const { getRootProps, getInputProps } = useDropzone({
     maxFiles: 2,
     accept: {
@@ -28,7 +51,6 @@ export const Dropzone = () => {
       'image/png': [],
     },
     onDrop: (acceptedFiles) => {
-      console.log('dropzone', images)
       if (
         images.length >= 2 ||
         acceptedFiles.length > 2 ||
@@ -65,10 +87,59 @@ export const Dropzone = () => {
     []
   )
 
+  const handleCheck = (e) => {
+    console.log(e.target.value)
+  }
+
   return (
-    <div {...getRootProps({ style })}>
-      <input {...getInputProps()} />
-      <p>Drag 'n' drop two files here, or click to select files</p>
-    </div>
+    <section>
+      <div {...getRootProps({ style })}>
+        <input {...getInputProps()} />
+        <p>Drag 'n' drop two files here, or click to select files</p>
+      </div>
+      <aside style={previewContainer}>
+        {images.map((image) => (
+          <div style={previewInner} key={image.name}>
+            <img
+              src={image.preview}
+              style={img}
+              onLoad={() => {
+                URL.revokeObjectURL(image.preview)
+              }}
+            />
+            <div className="flex flex-row w-full justify-center gap-8">
+              <input
+                className="w-4"
+                type="radio"
+                name="radio"
+                value={image.name}
+                onChange={handleCheck}
+              />
+              <button
+                className="bg-red-600 text-white p-1 rounded-md"
+                onClick={() => {
+                  removeImage(image.name)
+                }}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        ))}
+      </aside>
+      {images.length === 2 ? (
+        <div className="w-full flex gap-5 justify-center mt-4">
+          <p className="text-2xl">Select an image as background </p>
+          {/* <button
+              className="bg-blue-600 text-white p-1 rounded-md"
+              onClick={() => {
+                uploadImages()
+              }}
+            >
+              Upload
+            </button> */}
+        </div>
+      ) : null}
+    </section>
   )
 }
