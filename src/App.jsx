@@ -1,4 +1,4 @@
-import { DropImages } from './components/DropImages'
+import { CombineImages } from './components/CombineImages'
 import { Footer } from './components/Footer'
 
 function App() {
@@ -11,7 +11,7 @@ function App() {
       </header>
 
       <main className="w-full block">
-        <DropImages />
+        <CombineImages />
       </main>
       <Footer />
     </div>
