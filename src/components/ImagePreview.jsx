@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { toast } from 'react-toastify'
+import { SIZE_OFFSET, IMAGE_SIZE, OFFSET_SIGN } from '../consts'
 
 import { Cloudinary } from '@cloudinary/url-gen'
 import { Transformation } from '@cloudinary/url-gen'
@@ -16,7 +17,7 @@ import { TextStyle } from '@cloudinary/url-gen/qualifiers/textStyle'
 import { focusOn } from '@cloudinary/url-gen/qualifiers/gravity'
 import { FocusOn } from '@cloudinary/url-gen/qualifiers/focusOn'
 
-export const ImagePreview = ({ processedImages }) => {
+export const ImagePreview = ({ processedImages, inputsValue }) => {
   const [finalImageURL, setFinalImageURL] = useState('')
   const cloudinary = new Cloudinary({
     cloud: {
@@ -27,57 +28,98 @@ export const ImagePreview = ({ processedImages }) => {
     },
   })
 
-  const processImage = () => {
-    console.log('entra')
-    const selectedImage = processedImages.find((image) => image.selected)
-    const notSelectedImage = processedImages.find((image) => !image.selected)
+  const calculatePosition = (imageValues, backgoundImage) => {
+    const { position, size } = imageValues
+    const { width, height } = backgoundImage
+    const sizeOffset = SIZE_OFFSET[size]
+    const posi = new Position()
 
-    if (!selectedImage) {
-      toast.error('You need to select an image')
-      return
+    let xOffset = Math.floor(width / 2 - sizeOffset)
+    let yOffset = Math.floor(height / 2 - sizeOffset)
+
+    yOffset = OFFSET_SIGN[position].y + yOffset
+    xOffset = OFFSET_SIGN[position].x + xOffset
+
+    if (position === 'CENTER_LEFT' || position === 'CENTER_RIGHT') {
+      yOffset = 0
     }
 
+    if (position === 'TOP_CENTER' || position === 'BOTTOM_CENTER') {
+      xOffset = 0
+    }
+
+    if (position === 'CENTER') {
+      xOffset = 0
+      yOffset = 0
+    }
+
+    posi.gravity(compass('center')).offsetX(xOffset).offsetY(yOffset)
+
+    return posi
+  }
+
+  const applyTransformations = () => {
     const trans = new Transformation()
 
-    if (true) {
-      trans.resize(
-        crop()
-          .width(1.3)
-          .height(1.3)
-          .gravity(focusOn(FocusOn.faces()))
-          .regionRelative()
-      )
-    }
     if (true) {
       trans.adjust(saturation(50))
     }
     if (true) {
-      trans.effect(vignette()).resize(scale().width(100)).roundCorners(max())
+      trans
+        .effect(vignette())
+        .resize(scale().width(IMAGE_SIZE['SMALL']))
+        .roundCorners(max())
     }
 
-    const myImage = cloudinary.image(selectedImage.publicId).overlay(
-      source(image(notSelectedImage.publicId).transformation(trans)).position(
-        new Position().gravity(compass('center')).offsetX(-20).offsetY(20)
+    return trans
+  }
+
+  const processImage = () => {
+    const { image: imageValues } = inputsValue
+    console.log(imageValues)
+    const selectedImage = processedImages.find((image) => image.selected)
+    const notSelectedImage = processedImages.find((image) => !image.selected)
+
+    if (processedImages.length < 2) {
+      toast.error('You need two images')
+
+      return
+    }
+
+    if (!selectedImage) {
+      toast.error('You need to select an image')
+
+      return
+    }
+
+    if (!imageValues.position) {
+      toast.error('You need to chose a position for the image')
+
+      return
+    }
+
+    if (!imageValues.size) {
+      toast.error('You need to chose a size for the image')
+
+      return
+    }
+
+    if (!imageValues.style) {
+      toast.error('You need to add a style to the image')
+
+      return
+    }
+
+    const position = calculatePosition(imageValues, selectedImage)
+    const trans = applyTransformations(imageValues.style)
+
+    const myImage = cloudinary
+      .image(selectedImage.publicId)
+      .overlay(
+        source(image(notSelectedImage.publicId).transformation(trans)).position(
+          position
+        )
       )
-      // source(
-      //   image(notSelectedImage.publicId).transformation(
-      //     new Transformation()
-      //       .resize(
-      //         crop()
-      //           .width(1.3)
-      //           .height(1.3)
-      //           .gravity(focusOn(FocusOn.faces()))
-      //           .regionRelative()
-      //       )
-      //       .adjust(saturation(50))
-      //       .effect(vignette())
-      //       .resize(scale().width(100))
-      //       .roundCorners(max())
-      //   )
-      // ).position(
-      //   new Position().gravity(compass('center')).offsetX(-20).offsetY(20)
-      // )
-    )
 
     setFinalImageURL(myImage.toURL())
   }
