@@ -34,18 +34,18 @@ export const ImagePreview = ({ processedImages, inputsValue }) => {
     const sizeOffset = SIZE_OFFSET[size]
     const posi = new Position()
 
-    let xOffset = Math.floor(width / 2 - sizeOffset)
-    let yOffset = Math.floor(height / 2 - sizeOffset)
+    let xOffset = Math.floor(width / 2 - sizeOffset.x)
+    let yOffset = Math.floor(height / 2 - sizeOffset.y)
 
-    yOffset = OFFSET_SIGN[position].y + yOffset
     xOffset = OFFSET_SIGN[position].x + xOffset
-
-    if (position === 'CENTER_LEFT' || position === 'CENTER_RIGHT') {
-      yOffset = 0
-    }
+    yOffset = OFFSET_SIGN[position].y + yOffset
 
     if (position === 'TOP_CENTER' || position === 'BOTTOM_CENTER') {
       xOffset = 0
+    }
+
+    if (position === 'CENTER_LEFT' || position === 'CENTER_RIGHT') {
+      yOffset = 0
     }
 
     if (position === 'CENTER') {
@@ -58,16 +58,18 @@ export const ImagePreview = ({ processedImages, inputsValue }) => {
     return posi
   }
 
-  const applyTransformations = () => {
+  const applyTransformations = (imageValues) => {
+    const { size, style } = imageValues
     const trans = new Transformation()
 
     if (true) {
       trans.adjust(saturation(50))
     }
+
     if (true) {
       trans
         .effect(vignette())
-        .resize(scale().width(IMAGE_SIZE['SMALL']))
+        .resize(scale().width(IMAGE_SIZE[size]))
         .roundCorners(max())
     }
 
@@ -76,7 +78,6 @@ export const ImagePreview = ({ processedImages, inputsValue }) => {
 
   const processImage = () => {
     const { image: imageValues } = inputsValue
-    console.log(imageValues)
     const selectedImage = processedImages.find((image) => image.selected)
     const notSelectedImage = processedImages.find((image) => !image.selected)
 
@@ -111,7 +112,7 @@ export const ImagePreview = ({ processedImages, inputsValue }) => {
     }
 
     const position = calculatePosition(imageValues, selectedImage)
-    const trans = applyTransformations(imageValues.style)
+    const trans = applyTransformations(imageValues)
 
     const myImage = cloudinary
       .image(selectedImage.publicId)
