@@ -1,98 +1,39 @@
-import { ToastContainer } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
-import { API_URL } from '../consts'
-import { UploadedImages } from './UploadedImages'
+import { useState } from 'react'
 import { Dropzone } from './Dropzone'
+import { API_URL } from '../consts'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+
+import { Cloudinary } from '@cloudinary/url-gen'
+import { Transformation } from '@cloudinary/url-gen'
+import { scale, fill, crop } from '@cloudinary/url-gen/actions/resize'
+import { source } from '@cloudinary/url-gen/actions/overlay'
+import { byAngle } from '@cloudinary/url-gen/actions/rotate'
+import { vignette } from '@cloudinary/url-gen/actions/effect'
+import { byRadius, max } from '@cloudinary/url-gen/actions/roundCorners'
+import { saturation, hue } from '@cloudinary/url-gen/actions/adjust'
+import { Position } from '@cloudinary/url-gen/qualifiers/position'
+import { compass } from '@cloudinary/url-gen/qualifiers/gravity'
+import { image, text } from '@cloudinary/url-gen/qualifiers/source'
+import { TextStyle } from '@cloudinary/url-gen/qualifiers/textStyle'
+import { focusOn } from '@cloudinary/url-gen/qualifiers/gravity'
+import { FocusOn } from '@cloudinary/url-gen/qualifiers/focusOn'
 
 export const CombineImages = () => {
-  const [images, setImages] = useState([])
-  const { getRootProps, getInputProps } = useDropzone({
-    maxFiles: 2,
-    accept: {
-      'image/jpeg': [],
-      'image/png': [],
+  const [processedImages, setProcessedImages] = useState([])
+  const [finalImageURL, setFinalImageURL] = useState('')
+  const cloudinary = new Cloudinary({
+    cloud: {
+      cloudName: 'totisama',
     },
-    onDrop: (acceptedFiles) => {
-      if (
-        images.length >= 2 ||
-        acceptedFiles.length > 2 ||
-        acceptedFiles.length === 0 ||
-        (images.length === 1 && acceptedFiles.length === 2)
-      ) {
-        toast.error('You can only upload 2 images')
-
-        return
-      }
-
-      const acceptedFilesArray = acceptedFiles.map((file) => file.name)
-
-      if (images.find((file) => acceptedFilesArray.includes(file.name))) {
-        toast.error('Cant upload images with the same name')
-
-        return
-      }
-
-      const newFiles = acceptedFiles.map((file) =>
-        Object.assign(file, {
-          preview: URL.createObjectURL(file),
-        })
-      )
-
-      setImages([...images, ...newFiles])
+    url: {
+      secure: true,
     },
   })
 
-  const style = useMemo(
-    () => ({
-      ...dropZoneStyle,
-    }),
-    []
-  )
+  const uploadImages = async (images) => {
+    const actualImages = processedImages
 
-  const removeImage = (name) => {
-    const newArray = images.filter((file) => file.name !== name)
-    setImages(newArray)
-  }
-
-  const handleCheck = (e) => {
-    console.log(e.target.value)
-  }
-
-  const previewImages = images.map((file) => (
-    <div style={previewInner} key={file.name}>
-      <img
-        src={file.preview}
-        style={img}
-        onLoad={() => {
-          URL.revokeObjectURL(file.preview)
-        }}
-      />
-      <div className="flex flex-row w-full justify-center gap-8">
-        <input
-          className="w-4"
-          type="radio"
-          name="radio"
-          value={file.name}
-          onChange={handleCheck}
-        />
-        <button
-          className="bg-red-600 text-white p-1 rounded-md"
-          onClick={() => {
-            removeImage(file.name)
-          }}
-        >
-          Delete
-        </button>
-      </div>
-    </div>
-  ))
-
-  const updateImage = (imageId, imageName) => {
-    const image = images.filter((image) => image.name === imageName)
-    console.log(image)
-  }
-
-  const uploadImages = async () => {
     for (let i = 0; i < images.length; i++) {
       const formData = new FormData()
       const image = images[i]
@@ -100,25 +41,110 @@ export const CombineImages = () => {
       formData.append('file', image)
       formData.append('upload_preset', 'hackathon')
       formData.append('timestamp', Date.now() / 1000)
-      // this is not the secrete api key
+      // this is not the secret api key
       formData.append('api_key', 976248287242189)
 
       const response = await fetch(API_URL, {
         method: 'POST',
         body: formData,
       })
-
       const data = await response.json()
-      const { format, original_filename, public_id: imageId } = data
-      const imageName = original_filename + '.' + format
+      const {
+        format,
+        original_filename: imageName,
+        public_id: publicId,
+        height,
+        width,
+      } = data
 
-      updateImage(imageId, imageName)
+      const imageObject = {
+        name: imageName,
+        publicId,
+        format,
+        height,
+        width,
+        selected: false,
+      }
+
+      actualImages.push(imageObject)
     }
+
+    setProcessedImages(actualImages)
+  }
+
+  const selectImage = (name) => {
+    const newImages = []
+
+    processedImages.forEach((image) => {
+      image.selected = image.name === name
+
+      newImages.push(image)
+    })
+
+    setProcessedImages(newImages)
+  }
+
+  const processImage = () => {
+    const selectedImage = processedImages.find((image) => image.selected)
+    const notSelectedImage = processedImages.find((image) => !image.selected)
+
+    if (!selectedImage) {
+      toast.error('You need to select an image')
+      return
+    }
+
+    const myImage = cloudinary.image(selectedImage.publicId).overlay(
+      source(
+        image(notSelectedImage.publicId).transformation(
+          new Transformation()
+            .resize(
+              crop()
+                .width(1.3)
+                .height(1.3)
+                .gravity(focusOn(FocusOn.faces()))
+                .regionRelative()
+            )
+            .adjust(saturation(50))
+            .effect(vignette())
+            .resize(scale().width(100))
+            .roundCorners(max())
+        )
+      ).position(
+        new Position().gravity(compass('center')).offsetX(-20).offsetY(20)
+      )
+    )
+
+    setFinalImageURL(myImage.toURL())
   }
 
   return (
     <>
-      <Dropzone />
+      <Dropzone uploadImages={uploadImages} selectImage={selectImage} />
+      <section className="max-w-xl m-auto grid grid-cols-1 w-full mt-16">
+        <div className="flex justify-center mb-10">
+          <img src={finalImageURL} style={{ maxWidth: '350px' }} />
+        </div>
+        <div className="flex flex-row justify-center gap-8">
+          <button
+            onClick={() => {
+              processImage()
+            }}
+            className="bg-green-600 text-xl text-center font-bold text-white rounded-full px-4 py-2"
+          >
+            Preview Image
+          </button>
+          {finalImageURL ? (
+            <a
+              target="_blank"
+              download
+              href={finalImageURL}
+              className="block bg-blue-600 text-xl text-center font-bold text-white rounded-full px-4 py-2"
+            >
+              Download image
+            </a>
+          ) : null}
+        </div>
+      </section>
       <section className="mt-10">
         <p className="text-3xl">Custom not selected image</p>
         <div className="grid grid-cols-2 gap-6 mt-5">
