@@ -1,98 +1,15 @@
+import { useState } from 'react'
+import { Dropzone } from './Dropzone'
+import { API_URL } from '../consts'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import { API_URL } from '../consts'
-import { UploadedImages } from './UploadedImages'
-import { Dropzone } from './Dropzone'
 
 export const CombineImages = () => {
-  const [images, setImages] = useState([])
-  const { getRootProps, getInputProps } = useDropzone({
-    maxFiles: 2,
-    accept: {
-      'image/jpeg': [],
-      'image/png': [],
-    },
-    onDrop: (acceptedFiles) => {
-      if (
-        images.length >= 2 ||
-        acceptedFiles.length > 2 ||
-        acceptedFiles.length === 0 ||
-        (images.length === 1 && acceptedFiles.length === 2)
-      ) {
-        toast.error('You can only upload 2 images')
+  const [processedImages, setProcessedImages] = useState([])
 
-        return
-      }
+  const uploadImages = async (images) => {
+    const actualImages = processedImages
 
-      const acceptedFilesArray = acceptedFiles.map((file) => file.name)
-
-      if (images.find((file) => acceptedFilesArray.includes(file.name))) {
-        toast.error('Cant upload images with the same name')
-
-        return
-      }
-
-      const newFiles = acceptedFiles.map((file) =>
-        Object.assign(file, {
-          preview: URL.createObjectURL(file),
-        })
-      )
-
-      setImages([...images, ...newFiles])
-    },
-  })
-
-  const style = useMemo(
-    () => ({
-      ...dropZoneStyle,
-    }),
-    []
-  )
-
-  const removeImage = (name) => {
-    const newArray = images.filter((file) => file.name !== name)
-    setImages(newArray)
-  }
-
-  const handleCheck = (e) => {
-    console.log(e.target.value)
-  }
-
-  const previewImages = images.map((file) => (
-    <div style={previewInner} key={file.name}>
-      <img
-        src={file.preview}
-        style={img}
-        onLoad={() => {
-          URL.revokeObjectURL(file.preview)
-        }}
-      />
-      <div className="flex flex-row w-full justify-center gap-8">
-        <input
-          className="w-4"
-          type="radio"
-          name="radio"
-          value={file.name}
-          onChange={handleCheck}
-        />
-        <button
-          className="bg-red-600 text-white p-1 rounded-md"
-          onClick={() => {
-            removeImage(file.name)
-          }}
-        >
-          Delete
-        </button>
-      </div>
-    </div>
-  ))
-
-  const updateImage = (imageId, imageName) => {
-    const image = images.filter((image) => image.name === imageName)
-    console.log(image)
-  }
-
-  const uploadImages = async () => {
     for (let i = 0; i < images.length; i++) {
       const formData = new FormData()
       const image = images[i]
@@ -100,25 +17,52 @@ export const CombineImages = () => {
       formData.append('file', image)
       formData.append('upload_preset', 'hackathon')
       formData.append('timestamp', Date.now() / 1000)
-      // this is not the secrete api key
+      // this is not the secret api key
       formData.append('api_key', 976248287242189)
 
       const response = await fetch(API_URL, {
         method: 'POST',
         body: formData,
       })
-
       const data = await response.json()
-      const { format, original_filename, public_id: imageId } = data
-      const imageName = original_filename + '.' + format
+      const {
+        format,
+        original_filename: imageName,
+        public_id: imageId,
+        height,
+        width,
+      } = data
 
-      updateImage(imageId, imageName)
+      const imageObject = {
+        id: imageId,
+        name: imageName,
+        selected: false,
+        format,
+        height,
+        width,
+      }
+
+      actualImages.push(imageObject)
     }
+
+    setProcessedImages(actualImages)
+  }
+
+  const selectImage = (name) => {
+    const newImages = []
+
+    processedImages.forEach((image) => {
+      image.selected = image.name === name
+
+      newImages.push(image)
+    })
+
+    setProcessedImages(newImages)
   }
 
   return (
     <>
-      <Dropzone />
+      <Dropzone uploadImages={uploadImages} selectImage={selectImage} />
       <section className="mt-10">
         <p className="text-3xl">Custom not selected image</p>
         <div className="grid grid-cols-2 gap-6 mt-5">

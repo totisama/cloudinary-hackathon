@@ -12,5 +12,5 @@ export function useImages() {
     setImages(newArray)
   }
 
-  return { images, setNewImages, removeImage }
+  return { images, setNewImages, removeImage}
 }

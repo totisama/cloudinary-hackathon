@@ -42,7 +42,7 @@ const img = {
   // maxHeigth: '100px',
 }
 
-export const Dropzone = () => {
+export const Dropzone = ({ uploadImages, selectImage }) => {
   const { images, setNewImages, removeImage } = useImages()
   const { getRootProps, getInputProps } = useDropzone({
     maxFiles: 2,
@@ -62,21 +62,23 @@ export const Dropzone = () => {
         return
       }
 
-      const acceptedFilesArray = acceptedFiles.map((file) => file.name)
+      const acceptedFilesNames = acceptedFiles.map((file) => file.name)
 
-      if (images.find((file) => acceptedFilesArray.includes(file.name))) {
+      if (images.find((file) => acceptedFilesNames.includes(file.name))) {
         toast.error('Cant upload images with the same name')
 
         return
       }
 
-      const newFiles = acceptedFiles.map((file) =>
+      let newImages = acceptedFiles.map((file) =>
         Object.assign(file, {
           preview: URL.createObjectURL(file),
         })
       )
 
-      setNewImages([...images, ...newFiles])
+      setNewImages([...images, ...newImages])
+      // We just want to upload the new images
+      uploadImages(newImages)
     },
   })
 
@@ -88,7 +90,8 @@ export const Dropzone = () => {
   )
 
   const handleCheck = (e) => {
-    console.log(e.target.value)
+    const imageName = e.target.value
+    selectImage(imageName.substring(0, imageName.indexOf('.')))
   }
 
   return (
