@@ -13,9 +13,21 @@ export const POSITIONS = [
   { value: 'BOTTOM_RIGHT', label: 'Bottom right' },
 ]
 
-export const STYLES = [
+export const EFFECTS = [
   { value: '', label: 'Select an option' },
-  { value: 'FADED', label: 'Faded' },
+  { value: 'VIGNETTE', label: 'Vignette' },
+  { value: 'SEPIA', label: 'Sepia' },
+  { value: 'GRAYSCALE', label: 'Grayscale'},
+  { value: 'OILPAINT', label: 'Oil Paint'},
+  { value: 'CARTOONIFY', label: 'Cartoonify'},
+  { value: 'OUTLINE', label: 'Outline'},
+  { value: 'BLACK_WHITE', label: 'Black and white'},
+  { value: 'NEGATE', label: 'Negate'},
+  { value: 'DITHER', label: 'Dither'},
+  { value: 'VECTORIZE', label: 'Vectorize'},
+  { value: 'GRADIENT_FADE', label: 'Gradient fade'},
+  { value: 'ASSIST_COLOR_BLIND', label: 'Assist color blind'},
+  { value: 'SIMULATE_COLOR_BLIND', label: 'Simulate color blind'},
 ]
 
 export const SIZES = [
@@ -36,14 +48,14 @@ export const SIZE_OFFSET = {
   SMALL: { x: 40, y: 25 },
   MEDIUM: { x: 50, y: 35 },
   BIG: { x: 65, y: 45 },
-  EXTRA_BIG: { x: 75, y: 55 },
+  EXTRA_BIG: { x: 87, y: 65 },
 }
 
 export const IMAGE_SIZE = {
   SMALL: 75,
   MEDIUM: 100,
   BIG: 125,
-  EXTRA_BIG: 150,
+  EXTRA_BIG: 175,
 }
 
 export const OFFSET_SIGN = {
