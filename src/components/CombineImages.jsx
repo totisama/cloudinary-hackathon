@@ -3,7 +3,7 @@ import { Dropzone } from './Dropzone'
 import {
   API_URL,
   POSITIONS as positions,
-  STYLES as styles,
+  EFFECTS as effects,
   SIZES as sizes,
   INPUT_DEFAULT,
 } from '../consts'
@@ -119,15 +119,15 @@ export const CombineImages = () => {
               ))}
             </select>
           </div>
-          <div className="grid grid-cols-3">
-            <p className="text-xl col-span-1">Style:</p>
+          <div className="grid grid-cols-4">
+            <p className="text-xl col-span-1">Effect:</p>
             <select
-              name="style"
-              id="style"
+              name="effect"
+              id="effect"
               onChange={(e) => updateValues(e, 'IMAGE')}
-              className="w-full col-span-2 py-3 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-naranja focus:border-naranja sm:text-sm"
+              className="w-full col-span-3 py-3 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-naranja focus:border-naranja sm:text-sm"
             >
-              {styles.map((position) => (
+              {effects.map((position) => (
                 <option key={position.value} value={position.value}>
                   {position.label}
                 </option>
