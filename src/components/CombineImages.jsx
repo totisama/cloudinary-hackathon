@@ -1,12 +1,19 @@
 import { useState } from 'react'
 import { Dropzone } from './Dropzone'
-import { API_URL, POSITIONS as positions, STYLES as styles } from '../consts'
+import {
+  API_URL,
+  POSITIONS as positions,
+  STYLES as styles,
+  SIZES as sizes,
+  INPUT_DEFAULT,
+} from '../consts'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { ImagePreview } from './ImagePreview'
 
 export const CombineImages = () => {
   const [processedImages, setProcessedImages] = useState([])
+  const [inputsValue, setInputsValue] = useState(INPUT_DEFAULT)
 
   const uploadImages = async (images) => {
     const actualImages = processedImages
@@ -61,20 +68,33 @@ export const CombineImages = () => {
     setProcessedImages(newImages)
   }
 
+  const updateValues = (event, type) => {
+    const values = inputsValue
+    const property = event.target.name
+
+    if (type === 'IMAGE') {
+      values['image'][property] = event.target.value
+    }
+
+    setInputsValue(values)
+  }
+
   return (
     <>
       <Dropzone uploadImages={uploadImages} selectImage={selectImage} />
-      <ImagePreview processedImages={processedImages} />
+      <ImagePreview
+        processedImages={processedImages}
+        inputsValue={inputsValue}
+      />
       <section className="mt-10">
         <p className="text-3xl">Custom not selected image</p>
-        <div className="grid grid-cols-2 gap-6 mt-5">
+        <div className="grid grid-cols-3 gap-6 mt-5">
           <div className="grid grid-cols-3">
             <p className="text-xl col-span-1">Position:</p>
             <select
               name="position"
               id="position"
-              // onChange={}
-              // value={}
+              onChange={(e) => updateValues(e, 'IMAGE')}
               className="w-full col-span-2 py-3 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-naranja focus:border-naranja sm:text-sm"
             >
               {positions.map((position) => (
@@ -85,12 +105,26 @@ export const CombineImages = () => {
             </select>
           </div>
           <div className="grid grid-cols-3">
+            <p className="text-xl col-span-1">Size:</p>
+            <select
+              name="size"
+              id="size"
+              onChange={(e) => updateValues(e, 'IMAGE')}
+              className="w-full col-span-2 py-3 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-naranja focus:border-naranja sm:text-sm"
+            >
+              {sizes.map((size) => (
+                <option key={size.value} value={size.value}>
+                  {size.label}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="grid grid-cols-3">
             <p className="text-xl col-span-1">Style:</p>
             <select
               name="style"
               id="style"
-              // onChange={}
-              // value={}
+              onChange={(e) => updateValues(e, 'IMAGE')}
               className="w-full col-span-2 py-3 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-naranja focus:border-naranja sm:text-sm"
             >
               {styles.map((position) => (
@@ -102,7 +136,7 @@ export const CombineImages = () => {
           </div>
         </div>
       </section>
-      <section className="mt-10 grid grid-cols-2 gap-6">
+      {/* <section className="mt-10 grid grid-cols-2 gap-6">
         <div className="flex flex-row gap-5">
           <p className="text-3xl">Items</p>
           <button className="bg-blue-600 text-white p-1 rounded-md">
@@ -115,7 +149,7 @@ export const CombineImages = () => {
             Add Text <span>➕</span>
           </button>
         </div>
-      </section>
+      </section> */}
       <ToastContainer
         position="bottom-center"
         autoClose={3000}
