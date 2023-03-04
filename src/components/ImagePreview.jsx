@@ -7,7 +7,21 @@ import { Transformation } from '@cloudinary/url-gen'
 import { scale, fill, crop } from '@cloudinary/url-gen/actions/resize'
 import { source } from '@cloudinary/url-gen/actions/overlay'
 import { byAngle } from '@cloudinary/url-gen/actions/rotate'
-import { vignette } from '@cloudinary/url-gen/actions/effect'
+import {
+  vignette,
+  sepia,
+  grayscale,
+  oilPaint,
+  cartoonify,
+  outline,
+  blackwhite,
+  negate,
+  dither,
+  vectorize,
+  gradientFade,
+  assistColorBlind,
+  simulateColorBlind,
+} from '@cloudinary/url-gen/actions/effect'
 import { byRadius, max } from '@cloudinary/url-gen/actions/roundCorners'
 import { saturation, hue } from '@cloudinary/url-gen/actions/adjust'
 import { Position } from '@cloudinary/url-gen/qualifiers/position'
@@ -59,19 +73,57 @@ export const ImagePreview = ({ processedImages, inputsValue }) => {
   }
 
   const applyTransformations = (imageValues) => {
-    const { size, style } = imageValues
+    const { size, effect } = imageValues
     const trans = new Transformation()
 
-    if (true) {
-      trans.adjust(saturation(50))
+    // WIP: Support multiple effects
+    if (effect === 'VIGNETTE') {
+      trans.effect(vignette())
+    }
+    if (effect === 'SEPIA') {
+      trans.effect(sepia())
+    }
+    if (effect === 'GRAYSCALE') {
+      trans.effect(grayscale())
+    }
+    if (effect === 'OILPAINT') {
+      trans.effect(oilPaint())
+    }
+    if (effect === 'CARTOONIFY') {
+      trans.effect(cartoonify())
+    }
+    if (effect === 'OUTLINE') {
+      trans.effect(outline())
+    }
+    if (effect === 'BLACK_WHITE') {
+      trans.effect(blackwhite())
+    }
+    if (effect === 'NEGATE') {
+      trans.effect(negate())
+    }
+    if (effect === 'DITHER') {
+      trans.effect(dither())
+    }
+    if (effect === 'VECTORIZE') {
+      trans.effect(vectorize())
+    }
+    if (effect === 'GRADIENT_FADE') {
+      trans.effect(gradientFade())
+    }
+    if (effect === 'ASSIST_COLOR_BLIND') {
+      trans.effect(assistColorBlind())
+    }
+    if (effect === 'SIMULATE_COLOR_BLIND') {
+      trans.effect(simulateColorBlind())
     }
 
-    if (true) {
-      trans
-        .effect(vignette())
-        .resize(scale().width(IMAGE_SIZE[size]))
-        .roundCorners(max())
-    }
+    return trans
+  }
+
+  const applyAdjusts = (trans, imageValues) => {
+    const { size } = imageValues
+
+    trans.adjust(saturation(100)).resize(scale().width(IMAGE_SIZE[size]))
 
     return trans
   }
@@ -105,22 +157,20 @@ export const ImagePreview = ({ processedImages, inputsValue }) => {
       return
     }
 
-    if (!imageValues.style) {
-      toast.error('You need to add a style to the image')
-
-      return
-    }
-
     const position = calculatePosition(imageValues, selectedImage)
-    const trans = applyTransformations(imageValues)
+    var trans = applyTransformations(imageValues)
 
     const myImage = cloudinary
       .image(selectedImage.publicId)
-      .overlay(
-        source(image(notSelectedImage.publicId).transformation(trans)).position(
-          position
-        )
+      // .addTransformation(trans)
+
+    trans = applyAdjusts(trans, imageValues)
+
+    myImage.overlay(
+      source(image(notSelectedImage.publicId).transformation(trans)).position(
+        position
       )
+    )
 
     setFinalImageURL(myImage.toURL())
   }
