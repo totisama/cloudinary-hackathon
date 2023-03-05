@@ -47,22 +47,32 @@ export const Text = ({ setTextValues }) => {
             Position
           </label>
           <div className="grid grid-cols-2 gap-2">
-            <input
-              required
-              name="xPosition"
-              id="position"
-              className="w-full text-sm bg-white text-black focus:outline-none p-2 rounded-md mt-1"
-              placeholder="X position"
-              type="number"
-            />
-            <input
-              required
-              name="yPosition"
-              id="position"
-              className="w-full text-sm bg-white text-black focus:outline-none p-2 rounded-md mt-1"
-              placeholder="Y position"
-              type="number"
-            />
+            <div className="flex flex-row gap-1">
+              <span htmlFor="xPosition" className="text-xl mt-2">
+                X
+              </span>
+              <input
+                required
+                name="xPosition"
+                id="position"
+                className="w-full text-sm bg-white text-black focus:outline-none p-2 rounded-md mt-1"
+                placeholder="X position"
+                type="number"
+              />
+            </div>
+            <div className="flex flex-row gap-1">
+              <span htmlFor="yPosition" className="text-xl mt-2">
+                Y
+              </span>
+              <input
+                required
+                name="yPosition"
+                id="position"
+                className="w-full text-sm bg-white text-black focus:outline-none p-2 rounded-md mt-1"
+                placeholder="Y position"
+                type="number"
+              />
+            </div>
           </div>
         </div>
         <div>
