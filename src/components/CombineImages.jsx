@@ -7,9 +7,10 @@ import {
   SIZES as sizes,
   DEFAULT_VALUES,
 } from '../consts'
-import { ToastContainer } from 'react-toastify'
+import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { ImagePreview } from './ImagePreview'
+import { Text } from './Text'
 import Select from 'react-select'
 
 const customStyles = {
@@ -28,7 +29,8 @@ const customStyles = {
 
 export const CombineImages = () => {
   const [processedImages, setProcessedImages] = useState([])
-  const [inputsValue, setInputsValue] = useState(DEFAULT_VALUES)
+  const [generalValues, setGeneralValues] = useState(DEFAULT_VALUES)
+  const [textsListDummy, setTextsListDummy] = useState([])
 
   const uploadImages = async (images) => {
     const actualImages = processedImages
@@ -84,7 +86,7 @@ export const CombineImages = () => {
   }
 
   const updateValues = (event, type) => {
-    const values = inputsValue
+    const values = structuredClone(generalValues)
     const property = event.target.name
 
     if (type === 'IMAGE') {
@@ -95,17 +97,40 @@ export const CombineImages = () => {
       values['background'][property] = event.target.value
     }
 
-    setInputsValue(values)
+    setGeneralValues(values)
   }
 
   const updateEffectValues = (selectedValues, type) => {
-    const values = inputsValue
+    const values = structuredClone(generalValues)
     const newValues = selectedValues.map((value) => {
       return value.value
     })
 
     values[type]['effect'] = newValues
-    setInputsValue(values)
+    setGeneralValues(values)
+  }
+
+  const addNewText = () => {
+    const values = [...textsListDummy]
+
+    values.push(generateId())
+
+    setTextsListDummy(values)
+  }
+
+  const setTextValues = (textValues) => {
+    const values = structuredClone(generalValues)
+    const addedText = values.texts.filter((text) => text.id !== textValues.id)
+
+    addedText.push(textValues)
+    values.texts = addedText
+
+    toast.success('Text added succesfully')
+    setGeneralValues(values)
+  }
+
+  const generateId = () => {
+    return Math.floor(Math.random() * 1000)
   }
 
   return (
@@ -114,14 +139,14 @@ export const CombineImages = () => {
       {processedImages.length > 0 ? (
         <ImagePreview
           processedImages={processedImages}
-          inputsValue={inputsValue}
+          generalValues={generalValues}
         />
       ) : null}
       <section className="mt-10">
         <p className="text-3xl">Custom not selected image</p>
         <div className="grid grid-cols-2 gap-6 mt-5">
           <div className="grid grid-cols-3">
-            <p className="text-xl col-span-1">Position:</p>
+            <p className="text-xl col-span-1">Position</p>
             <select
               name="position"
               id="position"
@@ -136,7 +161,7 @@ export const CombineImages = () => {
             </select>
           </div>
           <div className="grid grid-cols-3">
-            <p className="text-xl col-span-1">Size:</p>
+            <p className="text-xl col-span-1">Size</p>
             <select
               name="size"
               id="size"
@@ -153,7 +178,7 @@ export const CombineImages = () => {
         </div>
         <div className="grid grid-cols-3 gap-1 mt-5">
           <div className="flex col-span-2 gap-6">
-            <p className="text-xl col-span-1">Effect:</p>
+            <p className="text-xl col-span-1">Effect</p>
             <Select
               isMulti
               closeMenuOnSelect={false}
@@ -171,7 +196,7 @@ export const CombineImages = () => {
       <section className="mt-10 w-2/3">
         <p className="text-3xl">Add effect to background</p>
         <div className="flex gap-6 mt-5">
-          <p className="text-xl">Effect:</p>
+          <p className="text-xl">Effect</p>
           <Select
             isMulti
             closeMenuOnSelect={false}
@@ -184,20 +209,30 @@ export const CombineImages = () => {
           />
         </div>
       </section>
-      {/* <section className="mt-10 grid grid-cols-2 gap-6">
-        <div className="flex flex-row gap-5">
+      <section className="mt-10 gap-6">
+        <div>
+          <div className="flex flex-row gap-5">
+            <p className="text-3xl">Texts</p>
+            <button
+              onClick={() => {
+                addNewText()
+              }}
+              className="bg-blue-600 text-white p-2 rounded-md"
+            >
+              New Text <span>➕</span>
+            </button>
+          </div>
+          {textsListDummy.map((text) => (
+            <Text key={text} setTextValues={setTextValues} />
+          ))}
+        </div>
+        {/* <div className="flex flex-row gap-5">
           <p className="text-3xl">Items</p>
           <button className="bg-blue-600 text-white p-1 rounded-md">
-            Add Item <span>➕</span>
+            New Item <span>➕</span>
           </button>
-        </div>
-        <div className="flex flex-row gap-5">
-          <p className="text-3xl">Texts</p>
-          <button className="bg-blue-600 text-white p-1 rounded-md">
-            Add Text <span>➕</span>
-          </button>
-        </div>
-      </section> */}
+        </div> */}
+      </section>
       <ToastContainer
         position="bottom-center"
         autoClose={3000}

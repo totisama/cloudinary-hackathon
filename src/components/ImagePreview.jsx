@@ -4,7 +4,7 @@ import { SIZE_OFFSET, IMAGE_SIZE, OFFSET_SIGN } from '../consts'
 
 import { Cloudinary } from '@cloudinary/url-gen'
 import { Transformation } from '@cloudinary/url-gen'
-import { scale, fill, crop } from '@cloudinary/url-gen/actions/resize'
+import { scale } from '@cloudinary/url-gen/actions/resize'
 import { source } from '@cloudinary/url-gen/actions/overlay'
 import { byAngle } from '@cloudinary/url-gen/actions/rotate'
 import {
@@ -21,16 +21,13 @@ import {
   assistColorBlind,
   simulateColorBlind,
 } from '@cloudinary/url-gen/actions/effect'
-import { byRadius, max } from '@cloudinary/url-gen/actions/roundCorners'
-import { saturation, hue } from '@cloudinary/url-gen/actions/adjust'
+import { saturation, opacity } from '@cloudinary/url-gen/actions/adjust'
 import { Position } from '@cloudinary/url-gen/qualifiers/position'
 import { compass } from '@cloudinary/url-gen/qualifiers/gravity'
 import { image, text } from '@cloudinary/url-gen/qualifiers/source'
 import { TextStyle } from '@cloudinary/url-gen/qualifiers/textStyle'
-import { focusOn } from '@cloudinary/url-gen/qualifiers/gravity'
-import { FocusOn } from '@cloudinary/url-gen/qualifiers/focusOn'
 
-export const ImagePreview = ({ processedImages, inputsValue }) => {
+export const ImagePreview = ({ processedImages, generalValues }) => {
   const [finalImageURL, setFinalImageURL] = useState('')
   const cloudinary = new Cloudinary({
     cloud: {
@@ -124,7 +121,11 @@ export const ImagePreview = ({ processedImages, inputsValue }) => {
   }
 
   const processImage = () => {
-    const { image: imageValues, background: backgoundValues } = inputsValue
+    const {
+      image: imageValues,
+      background: backgoundValues,
+      texts,
+    } = generalValues
     const selectedImage = processedImages.find((image) => image.selected)
     const notSelectedImage = processedImages.find((image) => !image.selected)
 
@@ -175,6 +176,28 @@ export const ImagePreview = ({ processedImages, inputsValue }) => {
         position
       )
     )
+
+    texts.forEach((textObject) => {
+      myImage.overlay(
+        source(
+          text(
+            textObject.text,
+            new TextStyle('arial', textObject.size).fontWeight('bold')
+          )
+            .textColor(textObject.color)
+            .transformation(
+              new Transformation()
+                .adjust(opacity(textObject.opacity))
+                .rotate(byAngle(textObject.rotation))
+            )
+        ).position(
+          new Position()
+            .gravity(compass('center'))
+            .offsetY(textObject.yPosition)
+            .offsetX(textObject.xPosition)
+        )
+      )
+    })
 
     setFinalImageURL(myImage.toURL())
   }
