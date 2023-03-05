@@ -151,7 +151,7 @@ export const CombineImages = () => {
             </select>
           </div>
         </div>
-        <div className="w-/2 grid grid-cols-3 gap-1 mt-5">
+        <div className="grid grid-cols-3 gap-1 mt-5">
           <div className="flex col-span-2 gap-6">
             <p className="text-xl col-span-1">Effect:</p>
             <Select
@@ -162,7 +162,7 @@ export const CombineImages = () => {
               placeholder="Select options"
               maxHeight={10}
               styles={customStyles}
-              className="col-span-3 py-1 px-1 bg-white rounded-md shadow-sm focus:outline-none sm:text-sm"
+              className="col-span-3 p-1 bg-white rounded-md shadow-sm focus:outline-none"
               onChange={(values) => updateEffectValues(values, 'image')}
             />
           </div>
@@ -179,7 +179,7 @@ export const CombineImages = () => {
             options={effects}
             placeholder="Select options"
             styles={customStyles}
-            className="col-span-3 py-1 px-1 bg-white rounded-md shadow-sm focus:outline-none sm:text-sm"
+            className="col-span-3 p-1 bg-white rounded-md shadow-sm focus:outline-none"
             onChange={(values) => updateEffectValues(values, 'background')}
           />
         </div>
