@@ -42,10 +42,10 @@ export const ImagePreview = ({ processedImages, inputsValue }) => {
     },
   })
 
-  const calculatePosition = (imageValues, backgoundImage) => {
+  const calculatePosition = (imageValues, backgoundImage, imageType) => {
     const { position, size } = imageValues
     const { width, height } = backgoundImage
-    const sizeOffset = SIZE_OFFSET[size]
+    const sizeOffset = SIZE_OFFSET[imageType][size]
     const posi = new Position()
 
     let xOffset = Math.floor(width / 2 - sizeOffset.x)
@@ -160,7 +160,16 @@ export const ImagePreview = ({ processedImages, inputsValue }) => {
       .image(selectedImage.publicId)
       .addTransformation(applyTransformations(backgoundValues.effect))
 
-    const position = calculatePosition(imageValues, selectedImage)
+    const { width, height } = notSelectedImage
+    let type = 'SQUARED'
+
+    if (width > height) {
+      type = 'HORIZONTAL'
+    } else if (height > width ) {
+      type = 'VERTICAL'
+    }
+
+    const position = calculatePosition(imageValues, selectedImage, type)
     let trans = applyTransformations(imageValues.effect)
 
     trans = applyAdjusts(trans, imageValues)

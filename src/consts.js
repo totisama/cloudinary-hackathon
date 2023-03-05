@@ -46,10 +46,24 @@ export const INPUT_DEFAULT = {
 }
 
 export const SIZE_OFFSET = {
-  SMALL: { x: 40, y: 25 },
-  MEDIUM: { x: 50, y: 35 },
-  BIG: { x: 65, y: 45 },
-  EXTRA_BIG: { x: 87, y: 65 },
+  HORIZONTAL: {
+    SMALL: { x: 37, y: 24 },
+    MEDIUM: { x: 50, y: 32 },
+    BIG: { x: 62, y: 40 },
+    EXTRA_BIG: { x: 87, y: 57 },
+  },
+  VERTICAL: {
+    SMALL: { x: 37, y: 46 },
+    MEDIUM: { x: 50, y: 62 },
+    BIG: { x: 62, y: 77 },
+    EXTRA_BIG: { x: 73, y: 88 },
+  },
+  SQUARED: {
+    SMALL: { x: 37, y: 37 },
+    MEDIUM: { x: 50, y: 50 },
+    BIG: { x: 62, y: 62 },
+    EXTRA_BIG: { x: 87, y: 87 },
+  },
 }
 
 export const IMAGE_SIZE = {
