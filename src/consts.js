@@ -36,7 +36,7 @@ export const SIZES = [
   { value: 'EXTRA_BIG', label: 'Extra big' },
 ]
 
-export const INPUT_DEFAULT = {
+export const DEFAULT_VALUES = {
   image: {},
   background: {},
   texts: [],

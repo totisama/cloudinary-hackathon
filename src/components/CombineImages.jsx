@@ -5,7 +5,7 @@ import {
   POSITIONS as positions,
   EFFECTS as effects,
   SIZES as sizes,
-  INPUT_DEFAULT,
+  DEFAULT_VALUES,
 } from '../consts'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
@@ -28,7 +28,7 @@ const customStyles = {
 
 export const CombineImages = () => {
   const [processedImages, setProcessedImages] = useState([])
-  const [inputsValue, setInputsValue] = useState(INPUT_DEFAULT)
+  const [inputsValue, setInputsValue] = useState(DEFAULT_VALUES)
 
   const uploadImages = async (images) => {
     const actualImages = processedImages
