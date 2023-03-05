@@ -13,7 +13,6 @@ import {
   grayscale,
   oilPaint,
   cartoonify,
-  outline,
   blackwhite,
   negate,
   dither,
@@ -76,43 +75,40 @@ export const ImagePreview = ({ processedImages, inputsValue }) => {
     const trans = new Transformation()
 
     // WIP: Support multiple effects
-    if (effect === 'VIGNETTE') {
+    if (effect.includes('VIGNETTE')) {
       trans.effect(vignette())
     }
-    if (effect === 'SEPIA') {
+    if (effect.includes('SEPIA')) {
       trans.effect(sepia())
     }
-    if (effect === 'GRAYSCALE') {
+    if (effect.includes('GRAYSCALE')) {
       trans.effect(grayscale())
     }
-    if (effect === 'OILPAINT') {
+    if (effect.includes('OILPAINT')) {
       trans.effect(oilPaint())
     }
-    if (effect === 'CARTOONIFY') {
+    if (effect.includes('CARTOONIFY')) {
       trans.effect(cartoonify())
     }
-    if (effect === 'OUTLINE') {
-      trans.effect(outline())
-    }
-    if (effect === 'BLACK_WHITE') {
+    if (effect.includes('BLACK_WHITE')) {
       trans.effect(blackwhite())
     }
-    if (effect === 'NEGATE') {
+    if (effect.includes('NEGATE')) {
       trans.effect(negate())
     }
-    if (effect === 'DITHER') {
+    if (effect.includes('DITHER')) {
       trans.effect(dither())
     }
-    if (effect === 'VECTORIZE') {
+    if (effect.includes('VECTORIZE')) {
       trans.effect(vectorize())
     }
-    if (effect === 'GRADIENT_FADE') {
+    if (effect.includes('GRADIENT_FADE')) {
       trans.effect(gradientFade())
     }
-    if (effect === 'ASSIST_COLOR_BLIND') {
+    if (effect.includes('ASSIST_COLOR_BLIND')) {
       trans.effect(assistColorBlind())
     }
-    if (effect === 'SIMULATE_COLOR_BLIND') {
+    if (effect.includes('SIMULATE_COLOR_BLIND')) {
       trans.effect(simulateColorBlind())
     }
 
@@ -165,7 +161,7 @@ export const ImagePreview = ({ processedImages, inputsValue }) => {
 
     if (width > height) {
       type = 'HORIZONTAL'
-    } else if (height > width ) {
+    } else if (height > width) {
       type = 'VERTICAL'
     }
 

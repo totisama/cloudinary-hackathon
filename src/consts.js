@@ -14,13 +14,11 @@ export const POSITIONS = [
 ]
 
 export const EFFECTS = [
-  { value: '', label: 'Select an option' },
   { value: 'VIGNETTE', label: 'Vignette' },
   { value: 'SEPIA', label: 'Sepia' },
   { value: 'GRAYSCALE', label: 'Grayscale' },
   { value: 'OILPAINT', label: 'Oil Paint' },
   { value: 'CARTOONIFY', label: 'Cartoonify' },
-  { value: 'OUTLINE', label: 'Outline' },
   { value: 'BLACK_WHITE', label: 'Black and white' },
   { value: 'NEGATE', label: 'Negate' },
   { value: 'DITHER', label: 'Dither' },
