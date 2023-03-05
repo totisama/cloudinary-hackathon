@@ -49,6 +49,7 @@ export const Dropzone = ({ uploadImages, selectImage }) => {
     accept: {
       'image/jpeg': [],
       'image/png': [],
+      'image/webp': [],
     },
     onDrop: (acceptedFiles) => {
       if (

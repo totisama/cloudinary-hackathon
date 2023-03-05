@@ -5,15 +5,30 @@ import {
   POSITIONS as positions,
   EFFECTS as effects,
   SIZES as sizes,
-  INPUT_DEFAULT,
+  DEFAULT_VALUES,
 } from '../consts'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { ImagePreview } from './ImagePreview'
+import Select from 'react-select'
+
+const customStyles = {
+  menu: (provided, state) => ({
+    ...provided,
+    padding: 5,
+    fontFamily: 'Avenir',
+    fontWeight: 'Bold',
+  }),
+  container: (provided, state) => ({
+    ...provided,
+    height: 'auto',
+    width: '100%',
+  }),
+}
 
 export const CombineImages = () => {
   const [processedImages, setProcessedImages] = useState([])
-  const [inputsValue, setInputsValue] = useState(INPUT_DEFAULT)
+  const [inputsValue, setInputsValue] = useState(DEFAULT_VALUES)
 
   const uploadImages = async (images) => {
     const actualImages = processedImages
@@ -76,26 +91,42 @@ export const CombineImages = () => {
       values['image'][property] = event.target.value
     }
 
+    if (type === 'BACKGROUND') {
+      values['background'][property] = event.target.value
+    }
+
+    setInputsValue(values)
+  }
+
+  const updateEffectValues = (selectedValues, type) => {
+    const values = inputsValue
+    const newValues = selectedValues.map((value) => {
+      return value.value
+    })
+
+    values[type]['effect'] = newValues
     setInputsValue(values)
   }
 
   return (
     <>
       <Dropzone uploadImages={uploadImages} selectImage={selectImage} />
-      <ImagePreview
-        processedImages={processedImages}
-        inputsValue={inputsValue}
-      />
+      {processedImages.length > 0 ? (
+        <ImagePreview
+          processedImages={processedImages}
+          inputsValue={inputsValue}
+        />
+      ) : null}
       <section className="mt-10">
         <p className="text-3xl">Custom not selected image</p>
-        <div className="grid grid-cols-3 gap-6 mt-5">
+        <div className="grid grid-cols-2 gap-6 mt-5">
           <div className="grid grid-cols-3">
             <p className="text-xl col-span-1">Position:</p>
             <select
               name="position"
               id="position"
               onChange={(e) => updateValues(e, 'IMAGE')}
-              className="w-full col-span-2 py-3 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-naranja focus:border-naranja sm:text-sm"
+              className="w-full col-span-2 py-3 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none sm:text-sm"
             >
               {positions.map((position) => (
                 <option key={position.value} value={position.value}>
@@ -110,7 +141,7 @@ export const CombineImages = () => {
               name="size"
               id="size"
               onChange={(e) => updateValues(e, 'IMAGE')}
-              className="w-full col-span-2 py-3 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-naranja focus:border-naranja sm:text-sm"
+              className="w-full col-span-2 py-3 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none sm:text-sm"
             >
               {sizes.map((size) => (
                 <option key={size.value} value={size.value}>
@@ -119,21 +150,38 @@ export const CombineImages = () => {
               ))}
             </select>
           </div>
-          <div className="grid grid-cols-4">
+        </div>
+        <div className="grid grid-cols-3 gap-1 mt-5">
+          <div className="flex col-span-2 gap-6">
             <p className="text-xl col-span-1">Effect:</p>
-            <select
+            <Select
+              isMulti
+              closeMenuOnSelect={false}
               name="effect"
-              id="effect"
-              onChange={(e) => updateValues(e, 'IMAGE')}
-              className="w-full col-span-3 py-3 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-naranja focus:border-naranja sm:text-sm"
-            >
-              {effects.map((position) => (
-                <option key={position.value} value={position.value}>
-                  {position.label}
-                </option>
-              ))}
-            </select>
+              options={effects}
+              placeholder="Select options"
+              maxHeight={10}
+              styles={customStyles}
+              className="col-span-3 p-1 bg-white rounded-md shadow-sm focus:outline-none"
+              onChange={(values) => updateEffectValues(values, 'image')}
+            />
           </div>
+        </div>
+      </section>
+      <section className="mt-10 w-2/3">
+        <p className="text-3xl">Add effect to background</p>
+        <div className="flex gap-6 mt-5">
+          <p className="text-xl">Effect:</p>
+          <Select
+            isMulti
+            closeMenuOnSelect={false}
+            name="effect"
+            options={effects}
+            placeholder="Select options"
+            styles={customStyles}
+            className="col-span-3 p-1 bg-white rounded-md shadow-sm focus:outline-none"
+            onChange={(values) => updateEffectValues(values, 'background')}
+          />
         </div>
       </section>
       {/* <section className="mt-10 grid grid-cols-2 gap-6">

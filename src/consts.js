@@ -14,20 +14,18 @@ export const POSITIONS = [
 ]
 
 export const EFFECTS = [
-  { value: '', label: 'Select an option' },
   { value: 'VIGNETTE', label: 'Vignette' },
   { value: 'SEPIA', label: 'Sepia' },
-  { value: 'GRAYSCALE', label: 'Grayscale'},
-  { value: 'OILPAINT', label: 'Oil Paint'},
-  { value: 'CARTOONIFY', label: 'Cartoonify'},
-  { value: 'OUTLINE', label: 'Outline'},
-  { value: 'BLACK_WHITE', label: 'Black and white'},
-  { value: 'NEGATE', label: 'Negate'},
-  { value: 'DITHER', label: 'Dither'},
-  { value: 'VECTORIZE', label: 'Vectorize'},
-  { value: 'GRADIENT_FADE', label: 'Gradient fade'},
-  { value: 'ASSIST_COLOR_BLIND', label: 'Assist color blind'},
-  { value: 'SIMULATE_COLOR_BLIND', label: 'Simulate color blind'},
+  { value: 'GRAYSCALE', label: 'Grayscale' },
+  { value: 'OILPAINT', label: 'Oil Paint' },
+  { value: 'CARTOONIFY', label: 'Cartoonify' },
+  { value: 'BLACK_WHITE', label: 'Black and white' },
+  { value: 'NEGATE', label: 'Negate' },
+  { value: 'DITHER', label: 'Dither' },
+  { value: 'VECTORIZE', label: 'Vectorize' },
+  { value: 'GRADIENT_FADE', label: 'Gradient fade' },
+  { value: 'ASSIST_COLOR_BLIND', label: 'Assist color blind' },
+  { value: 'SIMULATE_COLOR_BLIND', label: 'Simulate color blind' },
 ]
 
 export const SIZES = [
@@ -38,17 +36,32 @@ export const SIZES = [
   { value: 'EXTRA_BIG', label: 'Extra big' },
 ]
 
-export const INPUT_DEFAULT = {
+export const DEFAULT_VALUES = {
   image: {},
+  background: {},
   texts: [],
   items: [],
 }
 
 export const SIZE_OFFSET = {
-  SMALL: { x: 40, y: 25 },
-  MEDIUM: { x: 50, y: 35 },
-  BIG: { x: 65, y: 45 },
-  EXTRA_BIG: { x: 87, y: 65 },
+  HORIZONTAL: {
+    SMALL: { x: 37, y: 24 },
+    MEDIUM: { x: 50, y: 32 },
+    BIG: { x: 62, y: 40 },
+    EXTRA_BIG: { x: 87, y: 57 },
+  },
+  VERTICAL: {
+    SMALL: { x: 37, y: 46 },
+    MEDIUM: { x: 50, y: 62 },
+    BIG: { x: 62, y: 77 },
+    EXTRA_BIG: { x: 73, y: 88 },
+  },
+  SQUARED: {
+    SMALL: { x: 37, y: 37 },
+    MEDIUM: { x: 50, y: 50 },
+    BIG: { x: 62, y: 62 },
+    EXTRA_BIG: { x: 87, y: 87 },
+  },
 }
 
 export const IMAGE_SIZE = {

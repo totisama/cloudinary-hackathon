@@ -13,7 +13,6 @@ import {
   grayscale,
   oilPaint,
   cartoonify,
-  outline,
   blackwhite,
   negate,
   dither,
@@ -42,10 +41,10 @@ export const ImagePreview = ({ processedImages, inputsValue }) => {
     },
   })
 
-  const calculatePosition = (imageValues, backgoundImage) => {
+  const calculatePosition = (imageValues, backgoundImage, imageType) => {
     const { position, size } = imageValues
     const { width, height } = backgoundImage
-    const sizeOffset = SIZE_OFFSET[size]
+    const sizeOffset = SIZE_OFFSET[imageType][size]
     const posi = new Position()
 
     let xOffset = Math.floor(width / 2 - sizeOffset.x)
@@ -72,48 +71,44 @@ export const ImagePreview = ({ processedImages, inputsValue }) => {
     return posi
   }
 
-  const applyTransformations = (imageValues) => {
-    const { size, effect } = imageValues
+  const applyTransformations = (effect = '') => {
     const trans = new Transformation()
 
     // WIP: Support multiple effects
-    if (effect === 'VIGNETTE') {
+    if (effect.includes('VIGNETTE')) {
       trans.effect(vignette())
     }
-    if (effect === 'SEPIA') {
+    if (effect.includes('SEPIA')) {
       trans.effect(sepia())
     }
-    if (effect === 'GRAYSCALE') {
+    if (effect.includes('GRAYSCALE')) {
       trans.effect(grayscale())
     }
-    if (effect === 'OILPAINT') {
+    if (effect.includes('OILPAINT')) {
       trans.effect(oilPaint())
     }
-    if (effect === 'CARTOONIFY') {
+    if (effect.includes('CARTOONIFY')) {
       trans.effect(cartoonify())
     }
-    if (effect === 'OUTLINE') {
-      trans.effect(outline())
-    }
-    if (effect === 'BLACK_WHITE') {
+    if (effect.includes('BLACK_WHITE')) {
       trans.effect(blackwhite())
     }
-    if (effect === 'NEGATE') {
+    if (effect.includes('NEGATE')) {
       trans.effect(negate())
     }
-    if (effect === 'DITHER') {
+    if (effect.includes('DITHER')) {
       trans.effect(dither())
     }
-    if (effect === 'VECTORIZE') {
+    if (effect.includes('VECTORIZE')) {
       trans.effect(vectorize())
     }
-    if (effect === 'GRADIENT_FADE') {
+    if (effect.includes('GRADIENT_FADE')) {
       trans.effect(gradientFade())
     }
-    if (effect === 'ASSIST_COLOR_BLIND') {
+    if (effect.includes('ASSIST_COLOR_BLIND')) {
       trans.effect(assistColorBlind())
     }
-    if (effect === 'SIMULATE_COLOR_BLIND') {
+    if (effect.includes('SIMULATE_COLOR_BLIND')) {
       trans.effect(simulateColorBlind())
     }
 
@@ -129,7 +124,7 @@ export const ImagePreview = ({ processedImages, inputsValue }) => {
   }
 
   const processImage = () => {
-    const { image: imageValues } = inputsValue
+    const { image: imageValues, background: backgoundValues } = inputsValue
     const selectedImage = processedImages.find((image) => image.selected)
     const notSelectedImage = processedImages.find((image) => !image.selected)
 
@@ -157,12 +152,21 @@ export const ImagePreview = ({ processedImages, inputsValue }) => {
       return
     }
 
-    const position = calculatePosition(imageValues, selectedImage)
-    var trans = applyTransformations(imageValues)
-
     const myImage = cloudinary
       .image(selectedImage.publicId)
-      // .addTransformation(trans)
+      .addTransformation(applyTransformations(backgoundValues.effect))
+
+    const { width, height } = notSelectedImage
+    let type = 'SQUARED'
+
+    if (width > height) {
+      type = 'HORIZONTAL'
+    } else if (height > width) {
+      type = 'VERTICAL'
+    }
+
+    const position = calculatePosition(imageValues, selectedImage, type)
+    let trans = applyTransformations(imageValues.effect)
 
     trans = applyAdjusts(trans, imageValues)
 
