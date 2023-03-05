@@ -76,6 +76,10 @@ export const CombineImages = () => {
       values['image'][property] = event.target.value
     }
 
+    if (type === 'BACKGROUND') {
+      values['background'][property] = event.target.value
+    }
+
     setInputsValue(values)
   }
 
@@ -95,7 +99,7 @@ export const CombineImages = () => {
               name="position"
               id="position"
               onChange={(e) => updateValues(e, 'IMAGE')}
-              className="w-full col-span-2 py-3 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-naranja focus:border-naranja sm:text-sm"
+              className="w-full col-span-2 py-3 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none sm:text-sm"
             >
               {positions.map((position) => (
                 <option key={position.value} value={position.value}>
@@ -110,7 +114,7 @@ export const CombineImages = () => {
               name="size"
               id="size"
               onChange={(e) => updateValues(e, 'IMAGE')}
-              className="w-full col-span-2 py-3 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-naranja focus:border-naranja sm:text-sm"
+              className="w-full col-span-2 py-3 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none sm:text-sm"
             >
               {sizes.map((size) => (
                 <option key={size.value} value={size.value}>
@@ -125,7 +129,7 @@ export const CombineImages = () => {
               name="effect"
               id="effect"
               onChange={(e) => updateValues(e, 'IMAGE')}
-              className="w-full col-span-3 py-3 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-naranja focus:border-naranja sm:text-sm"
+              className="w-full col-span-3 py-3 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none sm:text-sm"
             >
               {effects.map((position) => (
                 <option key={position.value} value={position.value}>
@@ -134,6 +138,24 @@ export const CombineImages = () => {
               ))}
             </select>
           </div>
+        </div>
+      </section>
+      <section className="mt-10 w-2/4">
+        <p className="text-3xl">Add effect to background</p>
+        <div className="flex gap-6 mt-5">
+          <p className="text-xl">Effect:</p>
+          <select
+            name="effect"
+            id="effect"
+            onChange={(e) => updateValues(e, 'BACKGROUND')}
+            className="w-full py-3 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none sm:text-sm"
+          >
+            {effects.map((position) => (
+              <option key={position.value} value={position.value}>
+                {position.label}
+              </option>
+            ))}
+          </select>
         </div>
       </section>
       {/* <section className="mt-10 grid grid-cols-2 gap-6">

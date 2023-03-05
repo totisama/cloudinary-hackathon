@@ -40,6 +40,7 @@ export const SIZES = [
 
 export const INPUT_DEFAULT = {
   image: {},
+  background: {},
   texts: [],
   items: [],
 }

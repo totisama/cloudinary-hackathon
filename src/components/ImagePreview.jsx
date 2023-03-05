@@ -72,8 +72,7 @@ export const ImagePreview = ({ processedImages, inputsValue }) => {
     return posi
   }
 
-  const applyTransformations = (imageValues) => {
-    const { size, effect } = imageValues
+  const applyTransformations = (effect = '') => {
     const trans = new Transformation()
 
     // WIP: Support multiple effects
@@ -129,7 +128,7 @@ export const ImagePreview = ({ processedImages, inputsValue }) => {
   }
 
   const processImage = () => {
-    const { image: imageValues } = inputsValue
+    const { image: imageValues, background: backgoundValues } = inputsValue
     const selectedImage = processedImages.find((image) => image.selected)
     const notSelectedImage = processedImages.find((image) => !image.selected)
 
@@ -157,12 +156,12 @@ export const ImagePreview = ({ processedImages, inputsValue }) => {
       return
     }
 
-    const position = calculatePosition(imageValues, selectedImage)
-    var trans = applyTransformations(imageValues)
-
     const myImage = cloudinary
       .image(selectedImage.publicId)
-      // .addTransformation(trans)
+      .addTransformation(applyTransformations(backgoundValues.effect))
+
+    const position = calculatePosition(imageValues, selectedImage)
+    let trans = applyTransformations(imageValues.effect)
 
     trans = applyAdjusts(trans, imageValues)
 
