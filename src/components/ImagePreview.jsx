@@ -204,7 +204,7 @@ export const ImagePreview = ({ processedImages, generalValues }) => {
           onClick={() => {
             processImage()
           }}
-          className="bg-green-600 text-xl text-center font-bold text-white rounded-full px-4 py-2"
+          className="bg-green-600 text-md sm:text-xl text-center font-bold text-white rounded-full px-4 py-2"
         >
           Preview Image
         </button>
@@ -213,7 +213,7 @@ export const ImagePreview = ({ processedImages, generalValues }) => {
             target="_blank"
             download
             href={finalImageURL}
-            className="block bg-blue-600 text-xl text-center font-bold text-white rounded-full px-4 py-2"
+            className="block bg-blue-600 text-md sm:text-xl text-center font-bold text-white rounded-full px-4 py-2"
           >
             Download image
           </a>

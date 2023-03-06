@@ -1,10 +1,6 @@
 import { useState } from 'react'
 import { Dropzone } from './Dropzone'
-import {
-  API_URL,
-  EFFECTS as effects,
-  DEFAULT_VALUES,
-} from '../consts'
+import { API_URL, EFFECTS as effects, DEFAULT_VALUES } from '../consts'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { ImagePreview } from './ImagePreview'
@@ -163,12 +159,12 @@ export const CombineImages = () => {
       ) : null}
       <section className="mt-10">
         <h1 className="text-3xl">Custom not selected image</h1>
-        <div className="grid grid-cols-1 gap-6 mt-5">
-          <div className="grid grid-cols-1 gap-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-3">
+          <div className="gap-2">
             <label className="text-xl">Position</label>
             <div className="flex gap-5">
               <div className="flex gap-1">
-                <span htmlFor="xPosition" className="text-xl mt-1">
+                <span htmlFor="xPosition" className="text-md mt-2">
                   X
                 </span>
                 <input
@@ -181,7 +177,7 @@ export const CombineImages = () => {
                 />
               </div>
               <div className="flex flex-row gap-1">
-                <span htmlFor="yPosition" className="text-xl mt-1">
+                <span htmlFor="yPosition" className="text-md mt-2">
                   Y
                 </span>
                 <input
@@ -195,13 +191,13 @@ export const CombineImages = () => {
               </div>
             </div>
           </div>
-          <div className="grid gap-2">
+          <div>
             <label className="text-xl">Size</label>
             <div className="flex flex-row gap-1">
               <input
                 name="size"
                 id="size"
-                className="w-2/3 text-sm bg-white text-black focus:outline-none p-2 rounded-md"
+                className="w-2/3 text-sm bg-white text-black focus:outline-none p-2 rounded-md sm:w-full"
                 onChange={(e) => updateValues(e, 'IMAGE')}
                 type="number"
               />
@@ -227,7 +223,7 @@ export const CombineImages = () => {
       </section>
       <section className="mt-10">
         <h1 className="text-3xl">Add effect to background</h1>
-        <div className="flex flex-col gap-1 mt-5">
+        <div className="flex flex-col gap-1 mt-3">
           <label className="text-xl">Effect</label>
           <Select
             isMulti
@@ -241,7 +237,7 @@ export const CombineImages = () => {
           />
         </div>
       </section>
-      <div className="flex flex-col grid grid-cols-1 mt-10 gap-10 sm:grid-cols-2 sm:flex-row">
+      <div className="grid grid-cols-1 mt-14 gap-x-14 sm:grid-cols-2">
         <div>
           <div className="flex flex-row gap-5">
             <p className="text-3xl">Texts</p>
