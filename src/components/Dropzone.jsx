@@ -132,17 +132,9 @@ export const Dropzone = ({ uploadImages, selectImage }) => {
         ))}
       </aside>
       {images.length === 2 ? (
-        <div className="w-full flex gap-5 justify-center mt-4">
+        <aside className="w-full flex gap-5 justify-center mt-4">
           <p className="text-2xl">Select an image as background </p>
-          {/* <button
-              className="bg-blue-600 text-white p-1 rounded-md"
-              onClick={() => {
-                uploadImages()
-              }}
-            >
-              Upload
-            </button> */}
-        </div>
+        </aside>
       ) : null}
     </section>
   )

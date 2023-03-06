@@ -82,3 +82,22 @@ export const OFFSET_SIGN = {
   BOTTOM_CENTER: { x: '', y: '' },
   BOTTOM_RIGHT: { x: '', y: '' },
 }
+
+export const ITEMS = [
+  { value: '', label: 'Select an option' },
+  { value: 'BALLON', label: 'Balloon' },
+  { value: 'CAR', label: 'Blue Car' },
+  { value: 'FLOWER', label: 'Flower' },
+  { value: 'ROSE', label: 'Rose' },
+  { value: 'SOCCER_BALL', label: 'Soccer Ball' },
+  { value: 'CONFETI', label: 'Confeti' },
+]
+
+export const ITEM_CLOUDINARY_NAME = {
+  BALLON: 'otyuvaztntvaqzzgb68m.png',
+  CAR: 'jwsuyecqmf29edvq9u1s.png',
+  FLOWER: 'ywt0a4zj3mnuuwzrmfl7.png',
+  ROSE: 'y27lmguhgfvwdab5vyjq.png',
+  SOCCER_BALL: 'hytxeeapzqsqxg8w6kxq.png',
+  CONFETI: 'tw09grlidcfgzd9m8qyh.png',
+}

@@ -1,7 +1,8 @@
 import { useId, useState } from 'react'
+import { ITEMS as items } from '../consts'
 
-export const Text = ({ setTextValues }) => {
-  const textId = useId()
+export const Item = ({ setItemValues }) => {
+  const itemId = useId()
   const [added, setAdded] = useState(false)
   const [opacity, setOpacity] = useState(100)
   const [rotation, setRotation] = useState(0)
@@ -9,26 +10,31 @@ export const Text = ({ setTextValues }) => {
     event.preventDefault()
 
     const currentValues = Object.fromEntries(new FormData(event.target))
-    currentValues.id = textId
+    currentValues.id = itemId
 
     setAdded(true)
-    setTextValues(currentValues)
+    setItemValues(currentValues)
   }
 
   return (
     <section className="mt-5 px-4">
       <form onSubmit={handleSubmit} className="flex flex-col gap-5">
         <div>
-          <label htmlFor="text" className="text-xl">
-            Text
+          <label htmlFor="item" className="text-xl">
+            Item
           </label>
-          <input
+          <select
             required
-            name="text"
-            id="text"
-            className="w-full text-sm bg-white text-black focus:outline-none p-2 rounded-md mt-1"
-            type="text"
-          />
+            name="item"
+            id="item"
+            className="w-full col-span-2 py-3 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none sm:text-sm"
+          >
+            {items.map((item) => (
+              <option key={item.value} value={item.value}>
+                {item.label}
+              </option>
+            ))}
+          </select>
         </div>
         <div>
           <label htmlFor="position" className="text-xl">
@@ -79,17 +85,6 @@ export const Text = ({ setTextValues }) => {
           />
         </div>
         <div>
-          <label htmlFor="color" className="text-xl">
-            Color
-          </label>
-          <input
-            name="color"
-            id="color"
-            className="w-full bg-white rounded-md mt-1"
-            type="color"
-          />
-        </div>
-        <div>
           <label htmlFor="opacity" className="text-xl">
             Opacity
           </label>
@@ -134,7 +129,7 @@ export const Text = ({ setTextValues }) => {
             type="submit"
             className="w-1/2 bg-green-600 text-md text-center font-bold text-white rounded-md px-4 py-2"
           >
-            {added ? 'Edit Text' : 'Add Text'}
+            {added ? 'Edit Item' : 'Add Item'}
           </button>
         </div>
       </form>
