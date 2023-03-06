@@ -105,13 +105,13 @@ export const ImagePreview = ({ processedImages, generalValues }) => {
     }
 
     if (!imageValues.yPosition || !imageValues.xPosition) {
-      toast.error('You need to chose a position for the image')
+      toast.error('You need to set a position for the image')
 
       return
     }
 
     if (!imageValues.size) {
-      toast.error('You need to chose a size for the image')
+      toast.error('You need to set a size for the image')
 
       return
     }
