@@ -197,7 +197,11 @@ export const ImagePreview = ({ processedImages, generalValues }) => {
   return (
     <section className="max-w-xl m-auto grid grid-cols-1 w-full mt-16">
       <div className="flex justify-center mb-4">
-        <img src={finalImageURL} style={{ maxWidth: '350px' }} />
+        <img
+          alt="Final preview"
+          src={finalImageURL}
+          style={{ maxWidth: '350px' }}
+        />
       </div>
       <div className="flex flex-row justify-center gap-8">
         <button
@@ -210,6 +214,7 @@ export const ImagePreview = ({ processedImages, generalValues }) => {
         </button>
         {finalImageURL ? (
           <a
+            rel="noreferrer"
             target="_blank"
             download
             href={finalImageURL}

@@ -105,6 +105,7 @@ export const Dropzone = ({ uploadImages, selectImage }) => {
         {images.map((image) => (
           <div style={previewInner} key={image.name}>
             <img
+              alt={image.name}
               src={image.preview}
               style={img}
               onLoad={() => {
