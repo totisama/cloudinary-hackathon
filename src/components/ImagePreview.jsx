@@ -1,6 +1,11 @@
 import { useState } from 'react'
 import { toast } from 'react-toastify'
-import { SIZE_OFFSET, IMAGE_SIZE, OFFSET_SIGN } from '../consts'
+import {
+  SIZE_OFFSET,
+  IMAGE_SIZE,
+  OFFSET_SIGN,
+  ITEM_CLOUDINARY_NAME,
+} from '../consts'
 
 import { Cloudinary } from '@cloudinary/url-gen'
 import { Transformation } from '@cloudinary/url-gen'
@@ -125,6 +130,7 @@ export const ImagePreview = ({ processedImages, generalValues }) => {
       image: imageValues,
       background: backgoundValues,
       texts,
+      items,
     } = generalValues
     const selectedImage = processedImages.find((image) => image.selected)
     const notSelectedImage = processedImages.find((image) => !image.selected)
@@ -195,6 +201,25 @@ export const ImagePreview = ({ processedImages, generalValues }) => {
             .gravity(compass('center'))
             .offsetY(textObject.yPosition)
             .offsetX(textObject.xPosition)
+        )
+      )
+    })
+
+    items.forEach((itemObject) => {
+      myImage.overlay(
+        source(
+          image(ITEM_CLOUDINARY_NAME[itemObject.item]).transformation(
+            new Transformation()
+              .adjust(opacity(itemObject.opacity))
+              .rotate(byAngle(itemObject.rotation))
+              .adjust(saturation(100))
+              .resize(scale().width(itemObject.size * 3))
+          )
+        ).position(
+          new Position()
+            .gravity(compass('center'))
+            .offsetY(itemObject.yPosition)
+            .offsetX(itemObject.xPosition)
         )
       )
     })

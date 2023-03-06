@@ -12,6 +12,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import { ImagePreview } from './ImagePreview'
 import { Text } from './Text'
 import Select from 'react-select'
+import { Item } from './Item'
 
 const customStyles = {
   menu: (provided, state) => ({
@@ -31,6 +32,7 @@ export const CombineImages = () => {
   const [processedImages, setProcessedImages] = useState([])
   const [generalValues, setGeneralValues] = useState(DEFAULT_VALUES)
   const [textsListDummy, setTextsListDummy] = useState([])
+  const [itemsListDummy, setItemsListDummy] = useState([])
 
   const uploadImages = async (images) => {
     const actualImages = processedImages
@@ -118,6 +120,14 @@ export const CombineImages = () => {
     setTextsListDummy(values)
   }
 
+  const addNewItem = () => {
+    const values = [...itemsListDummy]
+
+    values.push(generateId())
+
+    setItemsListDummy(values)
+  }
+
   const setTextValues = (textValues) => {
     const values = structuredClone(generalValues)
     const addedText = values.texts.filter((text) => text.id !== textValues.id)
@@ -126,6 +136,17 @@ export const CombineImages = () => {
     values.texts = addedText
 
     toast.success('Text added succesfully')
+    setGeneralValues(values)
+  }
+
+  const setItemValues = (itemValues) => {
+    const values = structuredClone(generalValues)
+    const addedItem = values.items.filter((text) => text.id !== itemValues.id)
+
+    addedItem.push(itemValues)
+    values.items = addedItem
+
+    toast.success('Item added succesfully')
     setGeneralValues(values)
   }
 
@@ -209,7 +230,7 @@ export const CombineImages = () => {
           />
         </div>
       </section>
-      <section className="mt-10 gap-6">
+      <div className="flex flex-col grid grid-cols-1 mt-10 gap-10 sm:grid-cols-2 sm:flex-row">
         <div>
           <div className="flex flex-row gap-5">
             <p className="text-3xl">Texts</p>
@@ -226,13 +247,23 @@ export const CombineImages = () => {
             <Text key={text} setTextValues={setTextValues} />
           ))}
         </div>
-        {/* <div className="flex flex-row gap-5">
-          <p className="text-3xl">Items</p>
-          <button className="bg-blue-600 text-white p-1 rounded-md">
-            New Item <span>➕</span>
-          </button>
-        </div> */}
-      </section>
+        <div className="mt-10 sm:mt-0">
+          <div className="flex flex-row gap-5">
+            <p className="text-3xl">Items</p>
+            <button
+              onClick={() => {
+                addNewItem()
+              }}
+              className="bg-blue-600 text-white p-2 rounded-md"
+            >
+              New Item <span>➕</span>
+            </button>
+          </div>
+          {itemsListDummy.map((item) => (
+            <Item key={item} setItemValues={setItemValues} />
+          ))}
+        </div>
+      </div>
       <ToastContainer
         position="bottom-center"
         autoClose={3000}
