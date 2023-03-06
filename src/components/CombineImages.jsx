@@ -2,9 +2,7 @@ import { useState } from 'react'
 import { Dropzone } from './Dropzone'
 import {
   API_URL,
-  POSITIONS as positions,
   EFFECTS as effects,
-  SIZES as sizes,
   DEFAULT_VALUES,
 } from '../consts'
 import { ToastContainer, toast } from 'react-toastify'
@@ -24,7 +22,7 @@ const customStyles = {
   container: (provided, state) => ({
     ...provided,
     height: 'auto',
-    width: '100%',
+    width: '66%',
   }),
 }
 
@@ -164,42 +162,55 @@ export const CombineImages = () => {
         />
       ) : null}
       <section className="mt-10">
-        <p className="text-3xl">Custom not selected image</p>
-        <div className="grid grid-cols-2 gap-6 mt-5">
-          <div className="grid grid-cols-3">
-            <p className="text-xl col-span-1">Position</p>
-            <select
-              name="position"
-              id="position"
-              onChange={(e) => updateValues(e, 'IMAGE')}
-              className="w-full col-span-2 py-3 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none sm:text-sm"
-            >
-              {positions.map((position) => (
-                <option key={position.value} value={position.value}>
-                  {position.label}
-                </option>
-              ))}
-            </select>
+        <h1 className="text-3xl">Custom not selected image</h1>
+        <div className="grid grid-cols-1 gap-6 mt-5">
+          <div className="grid grid-cols-1 gap-2">
+            <label className="text-xl">Position</label>
+            <div className="flex gap-5">
+              <div className="flex gap-1">
+                <span htmlFor="xPosition" className="text-xl mt-1">
+                  X
+                </span>
+                <input
+                  name="xPosition"
+                  id="xPosition"
+                  className="w-full text-sm bg-white text-black focus:outline-none p-2 rounded-md"
+                  onChange={(e) => updateValues(e, 'IMAGE')}
+                  placeholder="X position"
+                  type="number"
+                />
+              </div>
+              <div className="flex flex-row gap-1">
+                <span htmlFor="yPosition" className="text-xl mt-1">
+                  Y
+                </span>
+                <input
+                  name="yPosition"
+                  id="yPosition"
+                  className="w-full text-sm bg-white text-black focus:outline-none p-2 rounded-md"
+                  onChange={(e) => updateValues(e, 'IMAGE')}
+                  placeholder="Y position"
+                  type="number"
+                />
+              </div>
+            </div>
           </div>
-          <div className="grid grid-cols-3">
-            <p className="text-xl col-span-1">Size</p>
-            <select
-              name="size"
-              id="size"
-              onChange={(e) => updateValues(e, 'IMAGE')}
-              className="w-full col-span-2 py-3 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none sm:text-sm"
-            >
-              {sizes.map((size) => (
-                <option key={size.value} value={size.value}>
-                  {size.label}
-                </option>
-              ))}
-            </select>
+          <div className="grid gap-2">
+            <label className="text-xl">Size</label>
+            <div className="flex flex-row gap-1">
+              <input
+                name="size"
+                id="size"
+                className="w-2/3 text-sm bg-white text-black focus:outline-none p-2 rounded-md"
+                onChange={(e) => updateValues(e, 'IMAGE')}
+                type="number"
+              />
+            </div>
           </div>
         </div>
-        <div className="grid grid-cols-3 gap-1 mt-5">
-          <div className="flex col-span-2 gap-6">
-            <p className="text-xl col-span-1">Effect</p>
+        <div className="gap-1 mt-5">
+          <div className="flex flex-col gap-1">
+            <p className="text-xl">Effect</p>
             <Select
               isMulti
               closeMenuOnSelect={false}
@@ -208,16 +219,16 @@ export const CombineImages = () => {
               placeholder="Select options"
               maxHeight={10}
               styles={customStyles}
-              className="col-span-3 p-1 bg-white rounded-md shadow-sm focus:outline-none"
+              className="p-1 bg-white rounded-md shadow-sm focus:outline-none"
               onChange={(values) => updateEffectValues(values, 'image')}
             />
           </div>
         </div>
       </section>
-      <section className="mt-10 w-2/3">
-        <p className="text-3xl">Add effect to background</p>
-        <div className="flex gap-6 mt-5">
-          <p className="text-xl">Effect</p>
+      <section className="mt-10">
+        <h1 className="text-3xl">Add effect to background</h1>
+        <div className="flex flex-col gap-1 mt-5">
+          <label className="text-xl">Effect</label>
           <Select
             isMulti
             closeMenuOnSelect={false}

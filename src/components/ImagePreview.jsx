@@ -1,11 +1,6 @@
 import { useState } from 'react'
 import { toast } from 'react-toastify'
-import {
-  SIZE_OFFSET,
-  IMAGE_SIZE,
-  OFFSET_SIGN,
-  ITEM_CLOUDINARY_NAME,
-} from '../consts'
+import { ITEM_CLOUDINARY_NAME } from '../consts'
 
 import { Cloudinary } from '@cloudinary/url-gen'
 import { Transformation } from '@cloudinary/url-gen'
@@ -42,36 +37,6 @@ export const ImagePreview = ({ processedImages, generalValues }) => {
       secure: true,
     },
   })
-
-  const calculatePosition = (imageValues, backgoundImage, imageType) => {
-    const { position, size } = imageValues
-    const { width, height } = backgoundImage
-    const sizeOffset = SIZE_OFFSET[imageType][size]
-    const posi = new Position()
-
-    let xOffset = Math.floor(width / 2 - sizeOffset.x)
-    let yOffset = Math.floor(height / 2 - sizeOffset.y)
-
-    xOffset = OFFSET_SIGN[position].x + xOffset
-    yOffset = OFFSET_SIGN[position].y + yOffset
-
-    if (position === 'TOP_CENTER' || position === 'BOTTOM_CENTER') {
-      xOffset = 0
-    }
-
-    if (position === 'CENTER_LEFT' || position === 'CENTER_RIGHT') {
-      yOffset = 0
-    }
-
-    if (position === 'CENTER') {
-      xOffset = 0
-      yOffset = 0
-    }
-
-    posi.gravity(compass('center')).offsetX(xOffset).offsetY(yOffset)
-
-    return posi
-  }
 
   const applyTransformations = (effect = '') => {
     const trans = new Transformation()
@@ -117,14 +82,6 @@ export const ImagePreview = ({ processedImages, generalValues }) => {
     return trans
   }
 
-  const applyAdjusts = (trans, imageValues) => {
-    const { size } = imageValues
-
-    trans.adjust(saturation(100)).resize(scale().width(IMAGE_SIZE[size]))
-
-    return trans
-  }
-
   const processImage = () => {
     const {
       image: imageValues,
@@ -147,7 +104,7 @@ export const ImagePreview = ({ processedImages, generalValues }) => {
       return
     }
 
-    if (!imageValues.position) {
+    if (!imageValues.yPosition || !imageValues.xPosition) {
       toast.error('You need to chose a position for the image')
 
       return
@@ -159,27 +116,29 @@ export const ImagePreview = ({ processedImages, generalValues }) => {
       return
     }
 
+    if (imageValues.size <= 0) {
+      toast.error('Size needs to be greater than 0')
+
+      return
+    }
+
     const myImage = cloudinary
       .image(selectedImage.publicId)
       .addTransformation(applyTransformations(backgoundValues.effect))
+    const trans = applyTransformations(imageValues.effect)
 
-    const { width, height } = notSelectedImage
-    let type = 'SQUARED'
-
-    if (width > height) {
-      type = 'HORIZONTAL'
-    } else if (height > width) {
-      type = 'VERTICAL'
-    }
-
-    const position = calculatePosition(imageValues, selectedImage, type)
-    let trans = applyTransformations(imageValues.effect)
-
-    trans = applyAdjusts(trans, imageValues)
+    trans.resize(scale().width(imageValues.size * 3))
 
     myImage.overlay(
       source(image(notSelectedImage.publicId).transformation(trans)).position(
-        position
+        new Position()
+          .gravity(compass('center'))
+          .offsetY(
+            imageValues.yPosition.includes('-')
+              ? -imageValues.yPosition
+              : -Math.abs(imageValues.yPosition)
+          )
+          .offsetX(imageValues.xPosition)
       )
     )
 
@@ -199,7 +158,11 @@ export const ImagePreview = ({ processedImages, generalValues }) => {
         ).position(
           new Position()
             .gravity(compass('center'))
-            .offsetY(textObject.yPosition)
+            .offsetY(
+              textObject.yPosition.includes('-')
+                ? -textObject.yPosition
+                : -Math.abs(textObject.yPosition)
+            )
             .offsetX(textObject.xPosition)
         )
       )
@@ -218,7 +181,11 @@ export const ImagePreview = ({ processedImages, generalValues }) => {
         ).position(
           new Position()
             .gravity(compass('center'))
-            .offsetY(itemObject.yPosition)
+            .offsetY(
+              itemObject.yPosition.includes('-')
+                ? -itemObject.yPosition
+                : -Math.abs(itemObject.yPosition)
+            )
             .offsetX(itemObject.xPosition)
         )
       )
